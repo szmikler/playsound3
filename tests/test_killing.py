@@ -14,7 +14,7 @@ loc_mp3_3s = "tests/sounds/sample3s.mp3"
 loc_flc_3s = "tests/sounds/sample3s.flac"
 web_wav_3s = "https://samplelib.com/lib/preview/wav/sample-3s.wav"
 
-# Download web files to the local cache (mirrors your existing tests)
+# Download web files to the local cache
 for url in [web_wav_3s]:
     _prepare_path(url)
 
@@ -42,7 +42,7 @@ def _read_file(path: pathlib.Path) -> bytes:
 
 
 def list_tagged_player_pids(tag: str) -> t.List[int]:
-    """Return PIDs whose environ contains TAG=<tag> and cmdline mentions a known player."""
+    """Return PIDs whose environ contains TAG=<tag>"""
     pids = []
     for pid in _iter_pids():
         base = pathlib.Path(f"/proc/{pid}")
@@ -70,17 +70,19 @@ time.sleep(10)
 
 @pytest.mark.skipif(sys.platform != "linux", reason="Linux-only: relies on /proc and PDEATHSIG semantics")
 def test_killing_parent():
+    TAG = "__test_killing_tag"
+
     for backend in AVAILABLE_BACKENDS:
         for path in get_supported_sounds(backend):
-            assert len(list_tagged_player_pids("tag1")) == 0
-            code = HELPER_CODE.format(path=path, backend="ffplay")
+            assert len(list_tagged_player_pids(TAG)) == 0
+            code = HELPER_CODE.format(path=path, backend=backend)
 
             environ = os.environ.copy()
-            environ["PLAYSOUND_TEST_TAG"] = "tag1"
+            environ["PLAYSOUND_TEST_TAG"] = TAG
             proc = subprocess.Popen(["python", "-c", code], env=environ)
 
             time.sleep(2.5)
-            assert len(list_tagged_player_pids("tag1")) == 2
+            assert len(list_tagged_player_pids(TAG)) == 2
 
             proc.kill()
-            assert len(list_tagged_player_pids("tag1")) == 0
+            assert len(list_tagged_player_pids(TAG)) == 0
