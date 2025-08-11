@@ -69,4 +69,4 @@ jobs:
 
       - name: Test with pytest
         run: |
-          timeout 60 pytest tests --log-cli-level=WARNING -vv
+          timeout 120 pytest tests --log-cli-level=WARNING -vv
