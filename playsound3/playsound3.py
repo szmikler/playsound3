@@ -87,14 +87,14 @@ class SoundBackend(ABC):
         raise NotImplementedError("play() must be implemented.")
 
 
-def _set_pdeathsig(sig: int = signal.SIGTERM) -> None:
+def _set_pdeathsig() -> None:
     """Set the signal delivered to this process if its parent dies."""
     try:
         import ctypes
 
         libc = ctypes.CDLL("libc.so.6", use_errno=True)
         PR_SET_PDEATHSIG = 1
-        if libc.prctl(PR_SET_PDEATHSIG, sig) != 0:
+        if libc.prctl(PR_SET_PDEATHSIG, signal.SIGTERM) != 0:
             err = ctypes.get_errno()
             raise OSError(err, os.strerror(err))
     except Exception:  # if unavailable (non-Linux) or fails, do nothing
@@ -119,7 +119,7 @@ class Gstreamer(SoundBackend):
     def play(self, sound: str) -> subprocess.Popen[bytes]:
         return subprocess.Popen(
             ["gst-play-1.0", "--no-interactive", "--quiet", sound],
-            preexec_fn=lambda: _set_pdeathsig(signal.SIGTERM),
+            preexec_fn=_set_pdeathsig,
         )
 
 
@@ -145,13 +145,13 @@ class Alsa(SoundBackend):
         if suffix == ".wav":
             return subprocess.Popen(
                 ["aplay", "--quiet", sound],
-                preexec_fn=lambda: _set_pdeathsig(signal.SIGTERM),
+                preexec_fn=_set_pdeathsig,
             )
         elif suffix == ".mp3":
             return subprocess.Popen(
                 ["mpg123", "-q", sound],
                 stdin=self.pty_master,
-                preexec_fn=lambda: _set_pdeathsig(signal.SIGTERM),
+                preexec_fn=_set_pdeathsig,
             )
         else:
             raise PlaysoundException(f"ALSA does not support for {suffix} files.")
@@ -171,7 +171,7 @@ class Ffplay(SoundBackend):
         return subprocess.Popen(
             ["ffplay", "-nodisp", "-autoexit", "-loglevel", "quiet", sound],
             stdout=subprocess.DEVNULL,
-            preexec_fn=lambda: _set_pdeathsig(signal.SIGTERM),
+            preexec_fn=_set_pdeathsig,
         )
 
 
@@ -223,7 +223,7 @@ class Afplay(SoundBackend):
     def play(self, sound: str) -> subprocess.Popen[bytes]:
         return subprocess.Popen(
             ["afplay", sound],
-            preexec_fn=lambda: _set_pdeathsig(signal.SIGTERM),
+            preexec_fn=_set_pdeathsig,
         )
 
 

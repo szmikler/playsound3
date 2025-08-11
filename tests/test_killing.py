@@ -1,8 +1,11 @@
 import os
 import pathlib
 import subprocess
+import sys
 import time
 import typing as t
+
+import pytest
 
 from playsound3 import AVAILABLE_BACKENDS
 from playsound3.playsound3 import _prepare_path
@@ -65,6 +68,7 @@ time.sleep(10)
 """
 
 
+@pytest.mark.skipif(sys.platform != "linux", reason="Linux-only: relies on /proc and PDEATHSIG semantics")
 def test_killing_parent():
     for backend in AVAILABLE_BACKENDS:
         for path in get_supported_sounds(backend):
