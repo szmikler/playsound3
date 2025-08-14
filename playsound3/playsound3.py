@@ -260,7 +260,7 @@ def _auto_select_backend() -> str | None:
         if backend in AVAILABLE_BACKENDS:
             return backend
 
-    logging.warning(_NO_BACKEND_MESSAGE)
+    logger.warning(_NO_BACKEND_MESSAGE)
     return None
 
 
