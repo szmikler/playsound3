@@ -1,5 +1,5 @@
 __license__ = "MIT"
-__version__ = "3.2.5"
+__version__ = "3.2.6"
 __author__ = "Szymon Mikler"
 
 from playsound3.playsound3 import (
