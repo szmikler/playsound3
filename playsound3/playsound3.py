@@ -101,6 +101,31 @@ def _set_pdeathsig() -> None:
         pass
 
 
+def get_platform_specific_kwds() -> dict[Any]:
+    """Get platform-specific keyword arguments for subprocess.Popen."""
+    if os.name == "nt":
+        return {}
+    else:
+        # On Unix-like systems, we want to ensure that the child process is terminated if the parent process dies
+        return {"preexec_fn": _set_pdeathsig}
+
+
+def run_as_subprocess(commands: list[str], **kwargs: Any) -> subprocess.Popen[bytes]:
+    """A wrapper around subprocess.Popen to handle platform-specific keyword arguments.
+
+    By default, stdout and stderr are suppressed (set to DEVNULL).
+    Additional keyword arguments can be passed and will override defaults.
+    """
+    popen_kwargs = {
+        "stdout": subprocess.DEVNULL,
+        "stderr": subprocess.DEVNULL,
+        **get_platform_specific_kwds(),
+        **kwargs,
+    }
+
+    return subprocess.Popen(commands, **popen_kwargs)
+
+
 class Gstreamer(SoundBackend):
     """Gstreamer backend for Linux."""
 
@@ -117,10 +142,7 @@ class Gstreamer(SoundBackend):
             return False
 
     def play(self, sound: str) -> subprocess.Popen[bytes]:
-        return subprocess.Popen(
-            ["gst-play-1.0", "--no-interactive", "--quiet", sound],
-            preexec_fn=_set_pdeathsig,
-        )
+        return run_as_subprocess(["gst-play-1.0", "--no-interactive", "--quiet", sound])
 
 
 class Alsa(SoundBackend):
@@ -143,16 +165,9 @@ class Alsa(SoundBackend):
             self.pty_master, _ = os.openpty()
 
         if suffix == ".wav":
-            return subprocess.Popen(
-                ["aplay", "--quiet", sound],
-                preexec_fn=_set_pdeathsig,
-            )
+            return run_as_subprocess(["aplay", "--quiet", sound])
         elif suffix == ".mp3":
-            return subprocess.Popen(
-                ["mpg123", "-q", sound],
-                stdin=self.pty_master,
-                preexec_fn=_set_pdeathsig,
-            )
+            return run_as_subprocess(["mpg123", "-q", sound], stdin=self.pty_master)
         else:
             raise PlaysoundException(f"ALSA does not support for {suffix} files.")
 
@@ -168,11 +183,7 @@ class Ffplay(SoundBackend):
             return False
 
     def play(self, sound: str) -> subprocess.Popen[bytes]:
-        return subprocess.Popen(
-            ["ffplay", "-nodisp", "-autoexit", "-loglevel", "quiet", sound],
-            stdout=subprocess.DEVNULL,
-            preexec_fn=_set_pdeathsig,
-        )
+        return run_as_subprocess(["ffplay", "-nodisp", "-autoexit", "-loglevel", "quiet", sound])
 
 
 class Wmplayer(SoundBackend):
@@ -221,10 +232,7 @@ class Afplay(SoundBackend):
         return shutil.which("afplay") is not None
 
     def play(self, sound: str) -> subprocess.Popen[bytes]:
-        return subprocess.Popen(
-            ["afplay", sound],
-            preexec_fn=_set_pdeathsig,
-        )
+        return run_as_subprocess(["afplay", sound])
 
 
 class Appkit(SoundBackend):
