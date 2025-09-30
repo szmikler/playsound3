@@ -12,6 +12,7 @@ import urllib.request
 from abc import ABC, abstractmethod
 from importlib.util import find_spec
 from pathlib import Path
+from typing import Any
 
 try:
     from typing import Protocol
@@ -101,7 +102,7 @@ def _set_pdeathsig() -> None:
         pass
 
 
-def get_platform_specific_kwds() -> dict[Any]:
+def get_platform_specific_kwds() -> dict[str, Any]:
     """Get platform-specific keyword arguments for subprocess.Popen."""
     if os.name == "nt":
         return {}
@@ -148,7 +149,7 @@ class Gstreamer(SoundBackend):
 class Alsa(SoundBackend):
     """ALSA backend for Linux."""
 
-    pty_master = None
+    pty_master: int | None = None
 
     def check(self) -> bool:
         try:

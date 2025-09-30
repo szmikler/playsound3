@@ -17,7 +17,7 @@ class WmplayerPopen:
 
     def __init__(self, sound: str):
         self._playing: bool = True
-        self.thread = Thread(target=self._play, args=(sound,), daemon=True)
+        self.thread: Thread = Thread(target=self._play, args=(sound,), daemon=True)
         self.thread.start()
 
     def _play(self, sound: str) -> None:
@@ -63,7 +63,7 @@ class WinmmPopen:
     def __init__(self, sound: str):
         self._playing: bool = True
         self.alias: str | None = None
-        self.thread = Thread(target=self._play, args=(sound,), daemon=True)
+        self.thread: Thread = Thread(target=self._play, args=(sound,), daemon=True)
         self.thread.start()
 
     def _send_winmm_mci_command(self, command: str) -> str:
@@ -121,12 +121,12 @@ class AppkitPopen:
             raise PlaysoundException("Install 'PyObjC' to use 'appkit' backend.") from e
 
         nsurl: Any = NSURL.fileURLWithPath_(sound)
-        self._nssound = NSSound.alloc().initWithContentsOfURL_byReference_(nsurl, True)
+        self._nssound: Any = NSSound.alloc().initWithContentsOfURL_byReference_(nsurl, True)
         self._nssound.retain()
-        self._start_time = time.time()
+        self._start_time: float = time.time()
 
         self._nssound.play()
-        self._duration = self._nssound.duration()
+        self._duration: float = self._nssound.duration()
 
     def terminate(self) -> None:
         self._nssound.stop()
