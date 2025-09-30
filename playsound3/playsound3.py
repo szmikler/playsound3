@@ -111,7 +111,7 @@ def get_platform_specific_kwds() -> dict[str, Any]:
         return {"preexec_fn": _set_pdeathsig}
 
 
-def run_as_subprocess(commands: list[str], **kwargs: Any) -> subprocess.Popen[bytes]:
+def run_as_subprocess(commands: list[str], **kwargs: Any) -> subprocess.Popen[str]:
     """A wrapper around subprocess.Popen to handle platform-specific keyword arguments.
 
     By default, stdout and stderr are suppressed (set to DEVNULL).
@@ -142,7 +142,7 @@ class Gstreamer(SoundBackend):
         except FileNotFoundError:
             return False
 
-    def play(self, sound: str) -> subprocess.Popen[bytes]:
+    def play(self, sound: str) -> subprocess.Popen[str]:
         return run_as_subprocess(["gst-play-1.0", "--no-interactive", "--quiet", sound])
 
 
@@ -159,7 +159,7 @@ class Alsa(SoundBackend):
         except FileNotFoundError:
             return False
 
-    def play(self, sound: str) -> subprocess.Popen[bytes]:
+    def play(self, sound: str) -> subprocess.Popen[str]:
         suffix = Path(sound).suffix
 
         if self.pty_master is None:
@@ -183,7 +183,7 @@ class Ffplay(SoundBackend):
         except FileNotFoundError:
             return False
 
-    def play(self, sound: str) -> subprocess.Popen[bytes]:
+    def play(self, sound: str) -> subprocess.Popen[str]:
         return run_as_subprocess(["ffplay", "-nodisp", "-autoexit", "-loglevel", "quiet", sound])
 
 
@@ -232,7 +232,7 @@ class Afplay(SoundBackend):
         # So we must use shutil to test if afplay exists
         return shutil.which("afplay") is not None
 
-    def play(self, sound: str) -> subprocess.Popen[bytes]:
+    def play(self, sound: str) -> subprocess.Popen[str]:
         return run_as_subprocess(["afplay", sound])
 
 
