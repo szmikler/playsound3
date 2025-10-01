@@ -2,13 +2,13 @@ name: install locally and run pytest on macOS
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 
 jobs:
   build:
-    runs-on: macos-14  # not compatible with python<3.9
+    runs-on: macos-14
     timeout-minutes: 5
 
     strategy:
