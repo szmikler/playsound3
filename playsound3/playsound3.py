@@ -12,13 +12,7 @@ import urllib.request
 from abc import ABC, abstractmethod
 from importlib.util import find_spec
 from pathlib import Path
-from typing import Any
-
-try:
-    from typing import Protocol
-except ImportError:
-    # Python 3.7 compatibility
-    from typing_extensions import Protocol
+from typing import Any, Protocol
 
 from playsound3 import backends
 
