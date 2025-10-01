@@ -180,7 +180,7 @@ class Ffplay(SoundBackend):
         try:
             subprocess.run(["ffplay", "-version"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
             return True
-        except FileNotFoundError:
+        except (FileNotFoundError, subprocess.CalledProcessError):
             return False
 
     def play(self, sound: str) -> subprocess.Popen[str]:
