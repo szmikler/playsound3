@@ -7,7 +7,6 @@ import shutil
 import signal
 import subprocess
 import tempfile
-import urllib.error
 import urllib.request
 from abc import ABC, abstractmethod
 from importlib.util import find_spec
@@ -40,11 +39,9 @@ def _download_sound_from_web(link: str, destination: Path) -> None:
     # Identifies itself as a browser to avoid HTTP 403 errors
     headers = {"User-Agent": "Mozilla/5.0 (Windows NT 6.1; Win64; x64)"}
     request = urllib.request.Request(link, headers=headers)
-    try:
-        with urllib.request.urlopen(request) as response, destination.open("wb") as out_file:
-            out_file.write(response.read())
-    except (urllib.error.URLError, urllib.error.HTTPError):
-        raise PlaysoundException(f"URL at {link} is unreachable")
+
+    with urllib.request.urlopen(request) as response, destination.open("wb") as out_file:
+        out_file.write(response.read())
 
 
 def _prepare_path(sound: str | Path) -> str:
