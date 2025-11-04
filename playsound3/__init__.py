@@ -7,6 +7,7 @@ from playsound3.playsound3 import (
     DEFAULT_BACKEND,
     playsound,
     prefer_backends,
+    PlaysoundException
 )
 
 __all__ = [
@@ -14,4 +15,5 @@ __all__ = [
     "DEFAULT_BACKEND",
     "playsound",
     "prefer_backends",
+    "PlaysoundException"
 ]
