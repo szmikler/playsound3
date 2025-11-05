@@ -4,10 +4,4 @@ __author__ = "Szymon Mikler"
 
 from playsound3.playsound3 import AVAILABLE_BACKENDS, DEFAULT_BACKEND, PlaysoundException, playsound, prefer_backends
 
-__all__ = [
-    "AVAILABLE_BACKENDS",
-    "DEFAULT_BACKEND",
-    "playsound",
-    "prefer_backends",
-    "PlaysoundException"
-]
+__all__ = ["AVAILABLE_BACKENDS", "DEFAULT_BACKEND", "playsound", "prefer_backends", "PlaysoundException"]
