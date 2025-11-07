@@ -7,7 +7,6 @@ import shutil
 import signal
 import subprocess
 import tempfile
-import urllib.error
 import urllib.request
 from abc import ABC, abstractmethod
 from importlib.util import find_spec
