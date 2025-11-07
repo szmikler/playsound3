@@ -249,6 +249,8 @@ class Appkit(SoundBackend):
 ## PLAYSOUND  ##
 ################
 
+_NO_BACKEND_MESSAGE = "No supported audio backends on this system!"
+
 
 def _auto_select_backend() -> str | None:
     if "PLAYSOUND3_BACKEND" in os.environ:
@@ -259,7 +261,7 @@ def _auto_select_backend() -> str | None:
         if backend in AVAILABLE_BACKENDS:
             return backend
 
-    logger.warning("No supported audio backends on this system!")
+    logger.warning(_NO_BACKEND_MESSAGE)
     return None
 
 
