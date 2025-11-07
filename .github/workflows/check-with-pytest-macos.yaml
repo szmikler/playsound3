@@ -8,17 +8,17 @@ on:
 
 jobs:
   build:
-    runs-on: macos-latest
+    runs-on: macos-14
     timeout-minutes: 5
 
     strategy:
       matrix:
         python-version: [
-          "3.9",
           "3.10",
           "3.11",
           "3.12",
           "3.13",
+          "3.14",
         ]
 
     steps:

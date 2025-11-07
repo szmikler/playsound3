@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 [project]
 name = "playsound3"
 dynamic = ["version"]
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 authors = [
     { name = "Szymon Mikler", email = "sjmikler@gmail.com" },
     { name = "Taylor Marks", email = "taylor@marksfam.com" },
@@ -22,11 +22,11 @@ classifiers = [
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Topic :: Multimedia :: Sound/Audio :: MIDI",
     "Topic :: Multimedia :: Sound/Audio :: Players",
     "Topic :: Multimedia :: Sound/Audio :: Players :: MP3",
@@ -65,11 +65,11 @@ packages = ["playsound3"]
 [tool.pyright]
 typeCheckingMode = "standard"
 exclude = ["devel", "build", "dist"]
-pythonVersion = "3.9"
+pythonVersion = "3.10"
 
 [tool.ruff]
 line-length = 120
-target-version = "py39"
+target-version = "py310"
 
 [tool.ruff.format]
 quote-style = "double"
